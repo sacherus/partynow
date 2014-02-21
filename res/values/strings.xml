@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Meeter</string>
+    <string name="action_settings">Settings</string>
+    <string name="loginButtonLabel">Login</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_parties_menu">PartiesMenu</string>
+    <string name="title_activity_parties">Parties</string>
+    <string name="title_activity_vogel_list_view">VogelListView</string>
+    <string name="title_activity_add_party">AddParty</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+</resources>

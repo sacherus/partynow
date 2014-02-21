@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/partiesListView"
+        android:layout_width="match_parent"
+        android:layout_height="217dp"
+        android:layout_weight="1.35" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/refreshAllPartiesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All parties" />
+
+        <Button
+            android:id="@+id/addPartyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add party" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/kmsEditText"
+            android:layout_width="112dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kms" />
+
+        <Button
+            android:id="@+id/partiesInYourAreaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In your area" />
+    </LinearLayout>
+
+</LinearLayout>
