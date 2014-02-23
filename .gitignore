@@ -14,10 +14,11 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
-
+#why this
 *.pydevproject
 #.project
-.metadata
+#dont know
+#.metadata
 bin/**
 tmp/**
 tmp/**/*
@@ -26,7 +27,7 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
+#.classpath
 .settings/
 .loadpath
 
