@@ -1,6 +1,8 @@
 package com.sacherus.partynow.provider;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -28,7 +30,7 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 
 	private static final String TAG = SimplePartyNowContentProvider.class.getName();
 	public static final String PARTY_TABLE_NAME = "parties";
-	
+
 	private static final int PARTIES = 1;
 	private static final int PARTY_ID = 2;
 	private static final int PARTY_REST = 3;
@@ -45,17 +47,19 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 	}
 
 	private SimpleVideoDbHelper mOpenDbHelper;
-	
-	// private static HashMap<String, String> sVideosProjectionMap;
-	// static {
-	// // example projection map, not actually used in this application
-	// sVideosProjectionMap = new HashMap<String, String>();
-	// sVideosProjectionMap.put(BaseColumns._ID, BaseColumns._ID);
-	// sVideosProjectionMap.put(PartyNow.Videos.TITLE, PartyNow.Videos.TITLE);
-	// sVideosProjectionMap.put(PartyNow.Videos.VIDEO, PartyNow.Videos.VIDEO);
-	// sVideosProjectionMap.put(PartyNow.Videos.DESCRIPTION,
-	// PartyNow.Videos.DESCRIPTION);
-	// }
+
+	public static Map<String, String> partyProjectionMap;
+	static {
+		// example projection map, not actually used in this application
+		partyProjectionMap = new TreeMap<String, String>();
+		partyProjectionMap.put(PartyColumnHelper._ID, BaseColumns._ID);
+		partyProjectionMap.put(PartyColumnHelper.TITLE, PartyColumnHelper.TITLE);
+		partyProjectionMap.put(PartyColumnHelper.LATITUDE, PartyColumnHelper.LATITUDE);
+		partyProjectionMap.put(PartyColumnHelper.LONGITUDE, PartyColumnHelper.LONGITUDE);
+		partyProjectionMap.put(PartyColumnHelper.START, PartyColumnHelper.START);
+		partyProjectionMap.put(PartyColumnHelper.DESCRIPTION_NAME, PartyColumnHelper.DESCRIPTION_NAME);
+		partyProjectionMap.put(PartyColumnHelper.END, PartyColumnHelper.END);
+	}
 
 	private static class SimpleVideoDbHelper extends SQLiteOpenHelper {
 		private static final String DATABASE_NAME = "simple_parties.db";
@@ -100,8 +104,8 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 					+ PartiesContract.PartyColumnHelper.LATITUDE + " REAL" + ");";
 
 			sqLiteDatabase.execSQL(qs);
-//			long pdb = populateDatabase(sqLiteDatabase);
-//			Log.d("TestTag", Long.toString(pdb));
+			// long pdb = populateDatabase(sqLiteDatabase);
+			// Log.d("TestTag", Long.toString(pdb));
 		}
 
 		public long populateDatabase(SQLiteDatabase database) {
@@ -115,8 +119,6 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 			return insertId;
 		};
 	}
-
-	
 
 	@Override
 	public boolean onCreate() {
@@ -209,47 +211,48 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 
 		throw new SQLException("Failed to insert row into " + uri);
 	}
-	
+
 	@Override
 	public int bulkInsert(Uri uri, ContentValues[] allValues) {
-	    SQLiteDatabase db = mOpenDbHelper.getWritableDatabase();
-	    switch (URI_MATCHER.match(uri)) {
-	    case PARTIES :
-	        return insertParties(db, allValues);
-	    default:
-	        throw new IllegalArgumentException("Unknown URI " + uri);
-	    }
-	}
-	
-	private int insertParties(SQLiteDatabase db, ContentValues[] allValues) {
-	    int rowsAdded = 0;
-	    long rowId;
-	    ContentValues values;
-	    try {
-	        db.beginTransaction();         
-	        for (ContentValues initialValues : allValues) {
-	            values = initialValues == null ? new ContentValues() : new ContentValues(initialValues);
-	            rowId = insertParty(db, values);
-	            if (rowId > 0)
-	                rowsAdded++;
-	        }
-	        db.setTransactionSuccessful();
-	    } catch (SQLException ex) {
-	        Log.e(TAG, "There was a problem with the bulk insert: " + ex.toString());
-	    } finally {
-	        db.endTransaction();
-	    }
-	    getContext().getContentResolver().notifyChange(PartyColumnHelper.PARTIES_URI, null);
-	    return rowsAdded;
-	}
-	 
-	private long insertParty(SQLiteDatabase db, ContentValues values) {
-//	    if (!values.containsKey(TeamCaptainData.EventColumns.ORGANIZER))
-//	        throw new IllegalArgumentException("Missing event column '" + TeamCaptainData.EventColumns.ORGANIZER + "'");
-//	    // ...do some processing (check for more missing fields, set default values, etc.)
-	    return db.insert(PARTY_TABLE_NAME, null, values);
+		SQLiteDatabase db = mOpenDbHelper.getWritableDatabase();
+		switch (URI_MATCHER.match(uri)) {
+		case PARTIES:
+			return insertParties(db, allValues);
+		default:
+			throw new IllegalArgumentException("Unknown URI " + uri);
+		}
 	}
 
+	private int insertParties(SQLiteDatabase db, ContentValues[] allValues) {
+		int rowsAdded = 0;
+		long rowId;
+		ContentValues values;
+		try {
+			db.beginTransaction();
+			for (ContentValues initialValues : allValues) {
+				values = initialValues == null ? new ContentValues() : new ContentValues(initialValues);
+				rowId = insertParty(db, values);
+				if (rowId > 0)
+					rowsAdded++;
+			}
+			db.setTransactionSuccessful();
+		} catch (SQLException ex) {
+			Log.e(TAG, "There was a problem with the bulk insert: " + ex.toString());
+		} finally {
+			db.endTransaction();
+		}
+		getContext().getContentResolver().notifyChange(PartyColumnHelper.PARTIES_URI, null);
+		return rowsAdded;
+	}
+
+	private long insertParty(SQLiteDatabase db, ContentValues values) {
+		// if (!values.containsKey(TeamCaptainData.EventColumns.ORGANIZER))
+		// throw new IllegalArgumentException("Missing event column '" +
+		// TeamCaptainData.EventColumns.ORGANIZER + "'");
+		// // ...do some processing (check for more missing fields, set default
+		// values, etc.)
+		return db.insert(PARTY_TABLE_NAME, null, values);
+	}
 
 	// private void verifyValues(ContentValues values) {
 	// // Make sure that the fields are all set

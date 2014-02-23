@@ -11,6 +11,10 @@ import com.sacherus.partynow.rest.RestApi;
 import com.sacherus.utils.Utils;
 
 public class Party implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1746216876503061317L;
 	private int id;
 	private String title;
 	private String description;
@@ -22,7 +26,6 @@ public class Party implements Serializable {
 	private double longitude;
 	private double latitude;
 
-	
 	
 	public String getDescription() {
 		return description;
@@ -110,18 +113,30 @@ public class Party implements Serializable {
 
 	public ContentValues toContent() {
 		ContentValues cv = new ContentValues();
-		Utils.log(getId());
 		cv.put(PartyColumnHelper.TITLE, getTitle());
 		cv.put(PartyColumnHelper.LATITUDE, getLatitude());
 		cv.put(PartyColumnHelper.LONGITUDE, getLongitude());
+		cv.put(PartyColumnHelper.START, getStart());
+		cv.put(PartyColumnHelper.DESCRIPTION_NAME, getDescription());
+		cv.put(PartyColumnHelper.END, getEnd());
 		cv.put(PartyColumnHelper._ID, getId());
+		
 		return cv;
 	}
-
+	
+	/*
+	 * used in:
+	 * Cursor -> Object, 
+	 * Activity -> ContentProvider -> RestApi
+	 */
 	private void fromContentLocal(ContentValues cv) {
+		setTitle(cv.getAsString(PartiesContract.PartyColumnHelper.TITLE));
 		setLatitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LATITUDE));
 		setLongitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LONGITUDE));
-		setTitle(cv.getAsString(PartiesContract.PartyColumnHelper.TITLE));
+		setStart(cv.getAsString(PartyColumnHelper.START));
+		setDescription(cv.getAsString(PartyColumnHelper.DESCRIPTION_NAME));
+		setEnd(cv.getAsString(PartyColumnHelper.END));
+		
 	}
 
 	public static Party fromContent(ContentValues cv) {

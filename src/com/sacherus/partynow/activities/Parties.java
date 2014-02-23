@@ -1,12 +1,16 @@
 package com.sacherus.partynow.activities;
 
+import java.io.Serializable;
+
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +25,9 @@ import com.sacherus.partynow.R;
 import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
+import com.sacherus.partynow.provider.SimplePartyNowContentProvider;
 import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
 
 public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 
@@ -94,9 +100,14 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View view,
 	                int position, long id) {
-	            Party party = (Party) parent.getItemAtPosition(position);
+	        	Cursor c = ((SimpleCursorAdapter)parent.getAdapter()).getCursor();
+	        	c.moveToPosition(position);
 	            Intent intent = new Intent(view.getContext(), PartyActivity.class);
-	            intent.putExtra(PartyActivity.PARTY, party);
+	            ContentValues cv = new ContentValues();
+	            Utils.log(cv.toString());	            
+	            DatabaseUtils.cursorRowToContentValues(c, cv); 
+	            Utils.log(cv.toString());	
+	            intent.putExtra(PartyActivity.PARTY, (Serializable) Party.fromContent(cv));
 	            startActivity(intent);
 	        }
 	    });
@@ -120,6 +131,8 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 		 * unordered. To back a ListView with a Cursor, the cursor must contain
 		 * a column named _ID.
 		 */
+		
+		String projection[] = SimplePartyNowContentProvider.partyProjectionMap.keySet().toArray(new String[0]);
 		cursorLoader = new CursorLoader(this, PartiesContract.PartyColumnHelper.CONTENT_URI, projection, null, null,
 				null);
 		return cursorLoader;

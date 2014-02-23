@@ -60,7 +60,7 @@ public class PartyActivity extends Activity {
 		Party party;
 		if (getIntent().hasExtra(PARTY)) {
 			Bundle bundle = getIntent().getExtras();
-			party = (Party) bundle.getParcelable(PARTY);
+			party = (Party) bundle.getSerializable(PARTY);
 			displayParty(party);
 		} else {
 			setGps();
@@ -90,6 +90,7 @@ public class PartyActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				clearForm();
+				
 			}
 		});
 		

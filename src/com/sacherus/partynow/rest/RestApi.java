@@ -33,6 +33,7 @@ public class RestApi {
 	final static String PARTY_PATH = "party/";
 	final static String USER_PATH = "users/";
 	final static String REGISTER_PATH = PARTY_PATH + USER_PATH + "register";
+	final static String JOIN_PATH = PARTY_PATH + "join/";
 
 	// final static String PARTIES_IN_AREA_PATH = PARTY_PATH + "area/";
 
@@ -53,6 +54,13 @@ public class RestApi {
 			instance = new RestApi();
 		}
 		return instance;
+	}
+	
+	/*
+	 * should add party object to content provider
+	 */
+	public void join(int partyId) {
+		
 	}
 
 	public void getToken(String user, String password) throws IOException {
