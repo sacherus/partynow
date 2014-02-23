@@ -20,10 +20,10 @@ import com.sacherus.utils.Utils;
 
 public class RestClient implements Runnable {
 
-	private static String BASE_URL_DEBUG = "http://192.168.1.3:8000/";
+	private static String BASE_URL_DEBUG = "http://192.168.0.14:8000/";
 	private static final String BASE_URL = "http://partynow.herokuapp.com/";
 	private static final String TAG = RestClient.class.getName();
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 	private static Token token;
 
 	public static void setToken(Token token) {

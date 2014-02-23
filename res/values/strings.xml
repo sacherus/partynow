@@ -11,5 +11,6 @@
     <string name="title_activity_vogel_list_view">VogelListView</string>
     <string name="title_activity_add_party">AddParty</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_party_details">PartyDetailsActivity</string>
 
 </resources>

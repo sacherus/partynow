@@ -10,12 +10,15 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.sacherus.partynow.R;
+import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.rest.RestApi;
@@ -32,15 +35,15 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 	private Button areaPartiesButton;
 	private EditText kmsEditText;
 	
-	private String[] projection = { PartyColumnHelper.DESCRIPTION_NAME};
+	private static String[] projection = { PartyColumnHelper.TITLE, PartyColumnHelper.DESCRIPTION_NAME, PartyColumnHelper.START, PartyColumnHelper._ID};
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_parties);
 		loadermanager = getLoaderManager();
  
-		String[] uiBindFrom = { PartyColumnHelper.TITLE,};
-		int[] uiBindTo = { R.id.title};
+		String[] uiBindFrom = projection;
+		int[] uiBindTo = { R.id.title, R.id.description, R.id.time};
 
 		/* Empty adapter that is used to display the loaded data */
 		mAdapter = new SimpleCursorAdapter(this, R.layout.party_list_item, null, uiBindFrom, uiBindTo, 0);
@@ -69,7 +72,7 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 		addPartyButton.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Parties.this, AddPartyActivity.class);
+				Intent intent = new Intent(Parties.this, PartyActivity.class);
 				startActivity(intent);
 			}
 		}); 
@@ -87,6 +90,16 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 				RestApi.i().getPartiesInArea(Double.parseDouble(kmsEditText.getText().toString()));
 			}
 		});
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+	        public void onItemClick(AdapterView<?> parent, View view,
+	                int position, long id) {
+	            Party party = (Party) parent.getItemAtPosition(position);
+	            Intent intent = new Intent(view.getContext(), PartyActivity.class);
+	            intent.putExtra(PartyActivity.PARTY, party);
+	            startActivity(intent);
+	        }
+	    });
 	}
 
 	/**
@@ -95,7 +108,6 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 	 * don't need to capture a reference to it.
 	 */
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		String[] projection = { PartiesContract.PartyColumnHelper._ID, PartiesContract.PartyColumnHelper.TITLE };
 		/**
 		 * This requires the URI of the Content Provider projection is the list
 		 * of columns of the database to return. Null will return all the
