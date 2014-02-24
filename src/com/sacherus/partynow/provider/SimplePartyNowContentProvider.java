@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import android.util.Log;
 import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
 
 /**
  * Simple content provider that demonstrates the basics of creating a content
@@ -191,11 +193,24 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 				values = new ContentValues();
 			}
 
-			// verifyValues(values);
-
-			// insert the initialValues into a new database row
 			SQLiteDatabase db = mOpenDbHelper.getWritableDatabase();
+
+			SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+			qb.setTables(PARTY_TABLE_NAME);
+			qb.setProjectionMap(partyProjectionMap);
+			// @formatter:off
+			Cursor c = (Cursor) qb.query(db, //database to put data in, columns to
+					new String[] { PartiesContract.PartyColumnHelper._ID }, // The columns to return from the query
+					null, // The columns for the where clause
+					null, // The values for the where clause
+					null, // don't group the rows
+					null, // don't filter by row groups
+					null // The sort order
+					);
+			// @formatter:on
+
 			long rowId = db.insert(PARTY_TABLE_NAME, PartiesContract.PartyColumnHelper.URI_PARTY_NAME, values);
+			Utils.log(rowId);
 			if (rowId > 0) {
 				Uri videoURi = ContentUris.withAppendedId(PartiesContract.PartyColumnHelper.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(videoURi, null);

@@ -14,8 +14,9 @@ public class Utils {
 		Log.d(tag, msg);
 	}
 	
-	public static void log(int id) {
-		log(Integer.toString(id));
+	
+	public static void log(long id) {
+		log(Long.toString(id));
 	}
 	
 	public static ContentValues[] toContents(List<Party> list) {

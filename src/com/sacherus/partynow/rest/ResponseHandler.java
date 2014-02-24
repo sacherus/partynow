@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sacherus.partynow.rest.RestService.Plurality;
 
 /**
  * Enables custom handling of HttpResponse and the entities they contain.
@@ -16,6 +17,15 @@ abstract public class ResponseHandler {
 	protected Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 			.create();
 	private Handler handler;
+	protected Plurality plur;
+	protected Class objectClass;
+	
+	ResponseHandler(Context context, Plurality plur, Class objectClass) {
+		this(context);
+		this.plur = plur;
+		this.objectClass = objectClass;
+	}
+	
 
 	public ResponseHandler(Context context) {
 		this.context = context.getApplicationContext();
@@ -26,7 +36,7 @@ abstract public class ResponseHandler {
 		handler.post(new Runnable() {
 	        @Override
 	        public void run() {
-	        	Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+	        	Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 	        }
 	    });
 	}

@@ -17,6 +17,7 @@ import com.sacherus.partynow.pojos.Token;
 import com.sacherus.partynow.pojos.User;
 import com.sacherus.partynow.rest.RestService.Method;
 import com.sacherus.partynow.rest.RestService.Plurality;
+import com.sacherus.utils.Utils;
 
 //not thread save
 //aka ServiceHelper
@@ -25,7 +26,7 @@ public class RestApi {
 	
 	private Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 	private GPSTracker gpstracker;
-
+	private User user = new User();
 	private static final String LOGIN = "login";
 	private static final String CLIENT_ID = "holenderskie";
 	private static final String CLIENT_SECRET = "wCzekoladzie";
@@ -33,11 +34,14 @@ public class RestApi {
 	final static String PARTY_PATH = "party/";
 	final static String USER_PATH = "users/";
 	final static String REGISTER_PATH = PARTY_PATH + USER_PATH + "register";
-	final static String JOIN_PATH = PARTY_PATH + "join/";
-
+	final static String JOIN = "join";
+	final static String ORGANIZE = "organize";
+	
 	// final static String PARTIES_IN_AREA_PATH = PARTY_PATH + "area/";
 
 	private RestApi() {
+		user.setId(1);
+		user.setUsername("sacherus");
 	}
 
 	private Context context;
@@ -57,10 +61,28 @@ public class RestApi {
 	}
 	
 	/*
-	 * should add party object to content provider
+	 * TODO: 
+	 *  sent to server party_id
+	 *  a) sends only party_id, used_id taken from user with login
+	 *  update/add party to database in response handler
 	 */
 	public void join(int partyId) {
-		
+		final String location = PARTY_PATH + Integer.toString(partyId) + "/" + JOIN;
+		Utils.log(location);
+		RestBuilder rb = new RestBuilder(getPartyIntent());
+		rb.location(location);
+		context.startService(rb.build());
+	}
+	
+	public void organize(int partyId, int userId) {
+		final String location = PARTY_PATH +  partyId + "/" + ORGANIZE + "/" + userId;
+		RestBuilder rb = new RestBuilder(getPartyIntent());
+		rb.location(location);
+		context.startService(rb.build());
+	}
+	
+	public User getMyUser() {
+		return user;
 	}
 
 	public void getToken(String user, String password) throws IOException {
@@ -83,43 +105,20 @@ public class RestApi {
 		rc.sendJSON(REGISTER_PATH, data);
 	}
 
-	// public List<Party> getParties() {
-	// String json;
-	// try {
-	// json = rc.getData(PARTY_PATH);
-	// Log.d(this.getClass().toString(), json);
-	// List<Party> parties = (List<Party>) gson.fromJson(json, new
-	// TypeToken<List<Party>>() {
-	// }.getType());
-	// Log.d(this.getClass().toString(), parties.toString());
-	// return parties;
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// return null;
-	// }
-
-	// public void sendParty(Party party) throws IOException {
-	// String json = gson.toJson(party);
-	// rc.sendJSON(PARTY, json);
-	// }
-
 	public boolean logout() {
 		return false;
 	}
-
-	public void TestAPI() {
-		Intent intent = new Intent(context, RestService.class);
-		intent.putExtra(RestService.TEST_INTENT, "hello");
-		context.startService(intent);
-	}
-
-	public void getParty(int id) {
+	
+	private Intent getPartyIntent() {
 		Intent intent = new Intent(context, RestService.class);
 		intent.putExtra(RestService.METHOD, Method.GET);
 		intent.putExtra(RestService.CLASS, Party.class);
 		intent.putExtra(RestService.PLURALITY, Plurality.SINGULAR);
+		return intent;
+	}
+
+	public void getParty(int id) {
+		Intent intent = getPartyIntent();
 		intent.putExtra(RestService.LOCATION, PARTY_PATH + Integer.toString(id));
 		context.startService(intent);
 	}
@@ -181,14 +180,24 @@ class RestBuilder {
 		return this;
 	}
 
-	private RestBuilder() {
+	public RestBuilder() {
+		intent = new Intent();
+	}
+	
+	public RestBuilder(Intent intent) {
+		this.intent = intent;
 	}
 
 	public static RestBuilder createBuilder() {
 		return new RestBuilder();
 	}
+	
+	public RestBuilder location(String location) {
+		intent.putExtra(RestService.LOCATION, location);
+		return this;
+	}
 
-	Intent produce() {
+	Intent build() {
 		return intent;
 	}
 }

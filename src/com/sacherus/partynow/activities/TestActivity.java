@@ -47,13 +47,10 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 		
 		partiesMenu.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-//				Intent intent = new Intent(MainActivity.this, PartiesMenu.class);
-//				startActivity(intent);
-				RestApi.i().getParty(1);
-//				RestApi.i().TestAPI();
-				
-//				int msg = SimplePartyNowContentProvider.sUriMatcher.match(PartyColumnHelper.PARTIES_URI_REST);
-//				Toast.makeText(MainActivity.this, Integer.toString(msg), Toast.LENGTH_SHORT).show();
+//				RestApi.i().shortMsg("autologin");
+//				AutoLoginTask alt = new AutoLoginTask();
+//				alt.execute();
+				RestApi.i().join(6);
 			}
 		});
 
@@ -67,6 +64,7 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 		});
 
 		if (autologin) {
+			RestApi.i().shortMsg("autologin");
 			AutoLoginTask alt = new AutoLoginTask();
 			alt.execute();
 		}

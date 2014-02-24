@@ -49,6 +49,11 @@ public class RestService extends IntentService {
 		this("Rest service");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.IntentService#onHandleIntent(android.content.Intent)
+	 * TODO: Good place for factory design pattern
+	 */
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Method method = (Method) intent.getSerializableExtra(METHOD);
