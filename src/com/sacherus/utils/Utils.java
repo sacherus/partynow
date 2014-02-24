@@ -1,5 +1,8 @@
 package com.sacherus.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,5 +32,23 @@ public class Utils {
 		}
 		ContentValues[] array = returnList.toArray(new ContentValues[size]);
 		return array;
+	}
+
+	public static Date stringToDate(String s) {
+		SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+		Date date = null;
+		try {
+			date = format.parse(s);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
+	}
+
+	public static String dateToString(Date d) {
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+		String datetime = dateformat.format(d);
+		return datetime;
 	}
 }
