@@ -1,5 +1,7 @@
 package com.sacherus.partynow.pojos;
 
+import com.sacherus.partynow.provider.PartiesContract.UserColumnHelper;
+
 import android.content.ContentValues;
 
 public class User implements IContentValuesPOJO {
@@ -33,14 +35,21 @@ public class User implements IContentValuesPOJO {
 		this.password = password;
 	}
 	@Override
-	public IContentValuesPOJO toContent(ContentValues cv) {
-		// TODO Auto-generated method stub
-		return null;
+	public ContentValues toContent() {
+		ContentValues cv = new ContentValues();
+		cv.put(UserColumnHelper.USERNAME, getUsername());
+		cv.put(UserColumnHelper._ID, getId());
+		return cv;
 	}
+	
 	@Override
-	public ContentValues fromContentLocal(IContentValuesPOJO cv) {
-		// TODO Auto-generated method stub
-		return null;
+	public void fromContentLocal(ContentValues cv) {
+		setUsername(cv.getAsString(UserColumnHelper.USERNAME));
+		setId(cv.getAsInteger(UserColumnHelper._ID));
+	}
+	
+	public User(ContentValues cv) {
+		fromContentLocal(cv);
 	}
 	
 }

@@ -17,8 +17,6 @@ import com.sacherus.utils.Utils;
 public class RestHandler extends ResponseHandler {
 
 	private static String TAG = RestHandler.class.getName();
-	Class objectClass;
-	Plurality plur;
 	
 	RestHandler(Context context, Plurality plur, Class objectClass) {
 		super(context, plur, objectClass);
@@ -40,7 +38,6 @@ public class RestHandler extends ResponseHandler {
 			showMsg("Party " + party.getTitle() + " added");
 			break;
 		}
-		
 	}
 	
 //	@Override

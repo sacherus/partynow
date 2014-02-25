@@ -23,6 +23,7 @@ import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.SimplePartyNowContentProvider;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
 
 public class TestActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 	GPSTracker gps;
@@ -50,7 +51,8 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 //				RestApi.i().shortMsg("autologin");
 //				AutoLoginTask alt = new AutoLoginTask();
 //				alt.execute();
-				RestApi.i().join(6);
+//				RestApi.i().join(6);
+//				RestApi.i().msg(RestApi.i().getMyUser().getUsername());
 			}
 		});
 

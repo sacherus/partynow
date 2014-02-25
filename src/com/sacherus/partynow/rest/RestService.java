@@ -1,6 +1,7 @@
 package com.sacherus.partynow.rest;
 
-
+import com.sacherus.partynow.pojos.Party;
+import com.sacherus.partynow.pojos.User;
 import com.sacherus.utils.Utils;
 
 import android.app.IntentService;
@@ -15,7 +16,7 @@ public class RestService extends IntentService {
 	public static final String HANDLER = "handler";
 	public static final String PLURALITY = "plurality";
 	public static final String CLASS = "class";
-	
+
 	enum Method {
 		GET("GET"), POST("POST");
 
@@ -35,7 +36,7 @@ public class RestService extends IntentService {
 			return text;
 		}
 	}
-	
+
 	enum Plurality {
 		SINGULAR, PLURAL
 	}
@@ -51,6 +52,7 @@ public class RestService extends IntentService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see android.app.IntentService#onHandleIntent(android.content.Intent)
 	 * TODO: Good place for factory design pattern
 	 */
@@ -61,8 +63,13 @@ public class RestService extends IntentService {
 		String data = intent.getStringExtra(DATA);
 		Class objectClass = (Class) intent.getSerializableExtra(CLASS);
 		Plurality plurality = (Plurality) intent.getSerializableExtra(PLURALITY);
-//		String methodString = method.toString();
-		ResponseHandler handler = new RestHandler(getApplicationContext(), plurality, objectClass);
+		// String methodString = method.toString();
+		ResponseHandler handler;
+		if (location.contains("user")) {
+			handler = new UserRestHandler(getApplicationContext(), plurality, objectClass);
+		} else {
+			handler = new RestHandler(getApplicationContext(), plurality, objectClass);
+		}
 		// handler.init(getApplicationContext());
 		Utils.log(objectClass.toString());
 		RestClient rc = new RestClient(handler, location);

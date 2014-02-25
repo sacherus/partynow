@@ -12,7 +12,7 @@ import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.utils.Utils;
 
-public class Party implements Serializable {
+public class Party implements Serializable, IContentValuesPOJO {
 	/**
 	 * 
 	 */
@@ -149,6 +149,7 @@ public class Party implements Serializable {
 		return title;
 	}
 	
+	@Override
 	public ContentValues toContent() {
 		ContentValues cv = new ContentValues();
 		cv.put(PartyColumnHelper.TITLE, getTitle());
@@ -167,7 +168,8 @@ public class Party implements Serializable {
 	 * Cursor -> Object, 
 	 * Activity -> ContentProvider -> RestApi
 	 */
-	private void fromContentLocal(ContentValues cv) {
+	@Override
+	public void fromContentLocal(ContentValues cv) {
 		setTitle(cv.getAsString(PartiesContract.PartyColumnHelper.TITLE));
 		setLatitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LATITUDE));
 		setLongitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LONGITUDE));

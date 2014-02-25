@@ -7,7 +7,9 @@ import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
 import com.sacherus.partynow.pojos.Party;
+import com.sacherus.partynow.pojos.User;
 import com.sacherus.partynow.provider.PartiesContract;
+import com.sacherus.partynow.provider.PartiesContract.UserColumnHelper;
 import com.sacherus.partynow.rest.RestService.Plurality;
 import com.sacherus.utils.Utils;
 
@@ -22,16 +24,16 @@ public class UserRestHandler extends ResponseHandler {
 	public void handleResponse(String response) {	
 		switch (plur) {
 		case PLURAL:
-			List<Party> users = (List<Party>) gson.fromJson(response, new TypeToken<List<Party>>() {
+			List<User> users = (List<User>) gson.fromJson(response, new TypeToken<List<User>>() {
 			}.getType());
 			final ContentValues cvs[] = Utils.toContents(users);
-			context.getContentResolver().bulkInsert(PartiesContract.PartyColumnHelper.CONTENT_URI, cvs);
+			context.getContentResolver().bulkInsert(UserColumnHelper.URI, cvs);
 			showMsg("Information for " + cvs.length + " users loaded");
 			break;
 		case SINGULAR:
-			Party party = gson.fromJson(response, objectClass);
-			context.getContentResolver().insert(PartiesContract.PartyColumnHelper.CONTENT_URI, party.toContent());
-			showMsg("Information about " + party.getTitle() + " added");
+			User user = gson.fromJson(response, User.class);
+			context.getContentResolver().insert(UserColumnHelper.URI, user.toContent());
+			showMsg("Information about " + user.getUsername() + " added");
 			break;
 		}
 		

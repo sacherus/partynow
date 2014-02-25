@@ -2,6 +2,7 @@ package com.sacherus.partynow.provider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.SyncStateContract.Columns;
 
 /**
  * Public API for the example FinchVideo caching content provider example.
@@ -44,7 +45,7 @@ public class PartiesContract {
 				+ PartyColumnHelper.URI_PARTY_NAME;
 		public static final Uri PARTIES_URI = Uri.parse(PartyColumnHelper.PARTIES_URI_STRING);
 		public static final Uri PARTIES_URI_REST = Uri.withAppendedPath(PartyColumnHelper.PARTIES_URI,
-				PartyColumnHelper.URI_REST_FLAG);
+				PartiesContract.URI_REST_FLAG);
 
 		/**
 		 * The content:// style URI for this table
@@ -69,8 +70,7 @@ public class PartiesContract {
 		 * </P>
 		 */
 		public static final String URI_PARTY_NAME = "party";
-		public static final String URI_REST_FLAG = "r";
-		public static final String URI_PARTY_NAME_REST = URI_PARTY_NAME + "/" + URI_REST_FLAG;
+		public static final String URI_PARTY_NAME_REST = URI_PARTY_NAME + "/" + PartiesContract.URI_REST_FLAG;
 
 		/**
 		 * Column name for the title of the video
@@ -98,5 +98,25 @@ public class PartiesContract {
 
 		public static final String END = "end";
 	}
+	
+	public static final class UserColumnHelper implements BaseColumns {
+		private UserColumnHelper() {};
+		
+		
+		public static final String URI_LAST_FRAGMENT = "user";
+		private static final String URI_STRING = "content://" + SIMPLE_AUTHORITY + "/"
+				+ UserColumnHelper.URI_LAST_FRAGMENT;
+		public static final Uri URI = Uri.parse(UserColumnHelper.URI_STRING);
+		public static final String URI_LAST_FRAGMENT_REST = URI_LAST_FRAGMENT + "/" + URI_REST_FLAG;
+		
+		/*
+		 * Columns start
+		 */
+		public static final String USERNAME = "username";
+		
+	}
+
+	public static final String URI_REST_FLAG = "r";
+	
 
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.sacherus.partynow.pojos.IContentValuesPOJO;
 import com.sacherus.partynow.pojos.Party;
 
 import android.content.ContentValues;
@@ -22,11 +23,11 @@ public class Utils {
 		log(Long.toString(id));
 	}
 	
-	public static ContentValues[] toContents(List<Party> list) {
+	public static ContentValues[] toContents(List<? extends IContentValuesPOJO> list) {
 		
 		List<ContentValues> returnList = new LinkedList<ContentValues>();
 		int size = 0;
-		for(Party el : list) {
+		for(IContentValuesPOJO el : list) {
 			size++;
 			returnList.add(el.toContent());
 		}
