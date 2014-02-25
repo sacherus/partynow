@@ -2,11 +2,11 @@ package com.sacherus.partynow.pojos;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
@@ -20,8 +20,8 @@ public class Party implements Serializable {
 	private int id;
 	private String title;
 	private String description;
-	private String start;
-	private String end;
+	private String start = "2014-02-25'T'18:00:00'Z'";
+	private String end = "2014-02-25'T'18:00:00'Z'";
 	private boolean isPrivate;
 	private List<Integer> organizers;
 	private List<Integer> participants;
@@ -122,27 +122,28 @@ public class Party implements Serializable {
 	}
 	
 	public int getStartDay() {
-		return getStartDate().get(Calendar.DAY_OF_MONTH);
+		return getStartDate().DAY_OF_MONTH;
 	}
 	
 	public int getStartMonth() {
-		return getStartDate().get(Calendar.MONTH);
+		return getStartDate().MONTH;
 	}
 	
 	public int getStartYear(){
-		return getStartDate().get(Calendar.YEAR);
+		return getStartDate().YEAR;
 	}
 	
 	public int getEndDay() {
-		return getEndDate().get(Calendar.DAY_OF_MONTH);
+		return getEndDate().DAY_OF_MONTH;
 	}
 	
 	public int getEndMonth() {
-		return getEndDate().get(Calendar.MONTH);
+		return getEndDate().MONTH;
 	}
 	
 	public int getEndYear(){
-		return getEndDate().get(Calendar.YEAR);
+		Log.i("lol","ry");
+		return getEndDate().YEAR;
 	}
 
 	public String toString() {
@@ -160,6 +161,10 @@ public class Party implements Serializable {
 		cv.put(PartyColumnHelper._ID, getId());
 		
 		return cv;
+	}
+	
+	public boolean isOrganizedBy(Integer userId) {
+		return organizers.contains(userId);
 	}
 	
 	/*

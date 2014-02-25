@@ -13,6 +13,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,7 +30,6 @@ import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.provider.SimplePartyNowContentProvider;
 import com.sacherus.partynow.rest.RestApi;
-import com.sacherus.utils.Utils;
 
 public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 
@@ -40,7 +42,7 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 	private Button refreshButton;
 	private Button areaPartiesButton;
 	private EditText kmsEditText;
-	
+	private Intent intent;
 	private static String[] projection = { PartyColumnHelper.TITLE, PartyColumnHelper.DESCRIPTION_NAME, PartyColumnHelper.START, PartyColumnHelper._ID};
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,15 +104,47 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 	                int position, long id) {
 	        	Cursor c = ((SimpleCursorAdapter)parent.getAdapter()).getCursor();
 	        	c.moveToPosition(position);
-	            Intent intent = new Intent(view.getContext(), PartyActivity.class);
+	        	intent = new Intent(view.getContext(), PartyActivity.class);
 	            ContentValues cv = new ContentValues();
-	            Utils.log(cv.toString());	            
 	            DatabaseUtils.cursorRowToContentValues(c, cv); 
-	            Utils.log(cv.toString());	
-	            intent.putExtra(PartyActivity.PARTY, (Serializable) Party.fromContent(cv));
+	            Party party = Party.fromContent(cv);
+	            intent.putExtra(PartyActivity.PARTY, (Serializable) party);
+	            if (RestApi.i().isCurrentUserOrganizor(party)) {
+	            registerForContextMenu(listView);
+                openContextMenu(listView);
+	            } else {
 	            startActivity(intent);
+	            }
 	        }
 	    });
+	}
+
+	final int CONTEXT_DISPLAY = 1;
+	final int CONTEXT_EDIT = 2;
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenu.ContextMenuInfo menuInfo) {
+		// Context menu
+		menu.setHeaderTitle("");
+		menu.add(Menu.NONE, CONTEXT_DISPLAY, Menu.NONE, "Display");
+		menu.add(Menu.NONE, CONTEXT_EDIT, Menu.NONE, "Edit");
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case CONTEXT_DISPLAY: 
+			intent.putExtra("type", true);
+			startActivity(intent);
+			break;
+		case CONTEXT_EDIT: 
+			//intent.putExtra("type", true);
+			startActivity(intent);
+			break;
+		}
+
+		return super.onContextItemSelected(item);
 	}
 
 	/**

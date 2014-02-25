@@ -35,7 +35,7 @@ public class Utils {
 	}
 
 	public static Date stringToDate(String s) {
-		SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+		SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  
 		Date date = null;
 		try {
 			date = format.parse(s);
@@ -47,7 +47,7 @@ public class Utils {
 	}
 
 	public static String dateToString(Date d) {
-		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm");  
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  
 		String datetime = dateformat.format(d);
 		return datetime;
 	}

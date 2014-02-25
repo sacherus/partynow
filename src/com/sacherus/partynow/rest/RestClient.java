@@ -21,7 +21,7 @@ public class RestClient implements Runnable {
 	private static String BASE_URL_DEBUG = "http://192.168.1.5:8000/";
 	private static final String BASE_URL = "http://partynow.herokuapp.com/";
 	private static final String TAG = RestClient.class.getName();
-	public static final boolean debug = true;
+	public static final boolean debug = false;
 	private static Token token;
 
 	public static void setToken(Token token) {

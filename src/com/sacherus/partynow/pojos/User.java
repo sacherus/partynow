@@ -32,6 +32,7 @@ public class User implements IContentValuesPOJO {
 		this.username = username;
 		this.password = password;
 	}
+	
 	@Override
 	public IContentValuesPOJO toContent(ContentValues cv) {
 		// TODO Auto-generated method stub
