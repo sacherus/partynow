@@ -1,7 +1,10 @@
 package com.sacherus.partynow.activities;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -14,12 +17,21 @@ import com.example.gpstracking.GPSTracker;
 import com.sacherus.partynow.R;
 import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.provider.PartiesContract;
+import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
 
 public class PartyActivity extends Activity {
 
+	// display
+	private TextView title;
+	private TextView description;
+	private TextView dates;
+	private TextView place;
+	private Button joinButton;
+	
+	// edit
 	private Button confirmButton;
 	private Button cancelButton;
-	private Button joinButton;
 	private Button clearButton;
 
 	private TextView longitudeTextView;
@@ -45,8 +57,34 @@ public class PartyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle extras = new Bundle();
+		if (getIntent().hasExtra("type")) {
+			Bundle bundle = getIntent().getExtras();
+		final Party party = (Party) bundle.getSerializable(PARTY);
+		setContentView(R.layout.activity_display);
+		title = (TextView) findViewById(R.id.title_d);
+		description = (TextView) findViewById(R.id.desc_d);
+		dates = (TextView) findViewById(R.id.dates_d);
+		place = (TextView) findViewById(R.id.place_d);
+		joinButton = (Button) findViewById(R.id.join_d);
+		joinButton.setOnClickListener(new Button.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				RestApi.i().join(party.getId());			
+			}
+		});
+		
+		title.setText(party.getTitle());
+		description.setText(party.getDescription());
+		StringBuilder sb = new StringBuilder();
+		sb.append("Date: ").append(party.getStart()).append(" - ").append(party.getEnd());
+		dates.setText(sb.toString());
+		sb.setLength(0);
+		sb.append("Place: ").append(String.valueOf(party.getLongitude())).append(" ").append(String.valueOf(party.getLatitude()));
+		} else {
 		setContentView(R.layout.activity_party);
-
+		
 		partyTitleEditText = (EditText) findViewById(R.id.partyTitleEditText);
 		longitudeTextView = (TextView) findViewById(R.id.addPartyLongitude);
 		latitudeTextView = (TextView) findViewById(R.id.addPartyLatitude);
@@ -65,25 +103,43 @@ public class PartyActivity extends Activity {
 		joinButton = (Button) findViewById(R.id.join);
 
 		Party party;
+		// VIEW PARTY
 		if (getIntent().hasExtra(PARTY)) {
 			Bundle bundle = getIntent().getExtras();
 			party = (Party) bundle.getSerializable(PARTY);
 			displayParty(party);
+			// NEW PARTY
 		} else {
+			Calendar cal = Calendar.getInstance();  
+			cal.set(cal.YEAR, cal.MONTH, cal.DAY_OF_MONTH);
+			cal.set(Calendar.HOUR_OF_DAY, cal.HOUR_OF_DAY);
+		    cal.set(Calendar.MINUTE, cal.MINUTE);
+		    Log.i("lol", "min "+cal.MINUTE+cal.HOUR);
+		    startDate.setMinDate(cal.getTimeInMillis());
+			
+			Log.i("lol","add2");
 			setGps();
 			Party.PartyBuilder pb = new Party.PartyBuilder();
 			pb.addLatitude(longitude).addLongitude(longitude)
-					.addTitle("Test title");
+					.addTitle("Test title").addStartDate(Utils.dateToString(new java.util.Date()))
+					.addEndDate(Utils.dateToString(new java.util.Date()));
 			party = pb.build();
+			startDate.setMinDate(Utils.stringToDate(party.getStart()).getTime());
+			endDate.setMinDate(Utils.stringToDate(party.getEnd()).getTime());
 		}
-// sprawdzic ilosc cyfer w month i przykladowy wyswietlic lol
+		// sprawdzic ilosc cyfer w month i przykladowy wyswietlic lol
 		displayParty(party);
 
 		confirmButton.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(!checkDates()) {
+					RestApi.i().msg("End date should be after start date!");
+					endDate.requestFocus();
+				} else {
 				insertToLocal();
 				finish();
+				}
 			}
 		});
 
@@ -101,7 +157,7 @@ public class PartyActivity extends Activity {
 
 			}
 		});
-
+		}
 	}
 
 	private void displayParty(Party party) {
@@ -168,9 +224,9 @@ public class PartyActivity extends Activity {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.valueOf(startDate.getYear())).append("-");
 		sb.append(String.valueOf(startDate.getMonth())).append("-");
-		sb.append(String.valueOf(startDate.getDayOfMonth())).append(" ");
+		sb.append(String.valueOf(startDate.getDayOfMonth())).append("'T'");
 		sb.append(String.valueOf(startTime.getCurrentHour())).append(":");
-		sb.append(String.valueOf(startTime.getCurrentMinute()));
+		sb.append(String.valueOf(startTime.getCurrentMinute())).append(":00'Z'");
 		return sb.toString();
 	}
 
@@ -178,10 +234,18 @@ public class PartyActivity extends Activity {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.valueOf(endDate.getYear())).append("-");
 		sb.append(String.valueOf(endDate.getMonth())).append("-");
-		sb.append(String.valueOf(endDate.getDayOfMonth())).append(" ");
+		sb.append(String.valueOf(endDate.getDayOfMonth())).append("'T'");
 		sb.append(String.valueOf(endTime.getCurrentHour())).append(":");
-		sb.append(String.valueOf(endTime.getCurrentMinute()));
+		sb.append(String.valueOf(endTime.getCurrentMinute())).append(":00'Z'");
 		return sb.toString();
+	}
+
+	private boolean checkDates(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
+		Calendar cal2 = Calendar.getInstance();
+		cal2.set(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth());
+		return cal2.after(cal);
 	}
 
 	@Override

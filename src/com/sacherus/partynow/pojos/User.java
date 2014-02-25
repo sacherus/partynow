@@ -34,6 +34,7 @@ public class User implements IContentValuesPOJO {
 		this.username = username;
 		this.password = password;
 	}
+	
 	@Override
 	public ContentValues toContent() {
 		ContentValues cv = new ContentValues();

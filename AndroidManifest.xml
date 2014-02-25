@@ -67,6 +67,10 @@
             android:name="com.sacherus.partynow.activities.PartyDetailsActivity"
             android:label="@string/title_activity_party_details" >
         </activity>
+        <activity
+            android:name="com.sacherus.partynow.DisplayActivity"
+            android:label="@string/title_activity_display" >
+        </activity>
     </application>
 
 </manifest>

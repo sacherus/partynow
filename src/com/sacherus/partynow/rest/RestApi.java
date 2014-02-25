@@ -84,6 +84,11 @@ public class RestApi {
 	public User getMyUser() {
 		return user;
 	}
+	
+	public boolean isCurrentUserOrganizor(Party party) {
+//		return party.isOrganizedBy(user.getId());
+		return false;
+	}
 
 	public void getToken(String username, String password) throws IOException {
 		final String OUTH2_TOKEN = "oauth2/access_token/";
@@ -174,7 +179,7 @@ public class RestApi {
 	}
 
 	public void msg(String msg) {
-		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 	}
 
 	public void shortMsg(String text) {
