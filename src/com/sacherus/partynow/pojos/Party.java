@@ -1,15 +1,20 @@
 package com.sacherus.partynow.pojos;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.ContentValues;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
+import com.sacherus.partynow.rest.RestApi;
 import com.sacherus.utils.Utils;
 
 public class Party implements Serializable, IContentValuesPOJO {
@@ -20,8 +25,8 @@ public class Party implements Serializable, IContentValuesPOJO {
 	private int id;
 	private String title;
 	private String description;
-	private String start = "2014-02-25'T'18:00:00'Z'";
-	private String end = "2014-02-25'T'18:00:00'Z'";
+	private String start = "2014-02-25T18:00:00Z";
+	private String end = "2014-02-25T18:00:00Z";
 	private boolean isPrivate;
 	private List<Integer> organizers;
 	private List<Integer> participants;
@@ -160,7 +165,9 @@ public class Party implements Serializable, IContentValuesPOJO {
 		cv.put(PartyColumnHelper.DESCRIPTION_NAME, getDescription());
 		cv.put(PartyColumnHelper.END, getEnd());
 		cv.put(PartyColumnHelper._ID, getId());
-		
+		Gson gson = RestApi.i().getGson();
+		cv.put(PartyColumnHelper.PARTICIPANTS, gson.toJson(getParticipants()));
+		cv.put(PartyColumnHelper.ORGANIZERS, gson.toJson(getOrganizers()));		
 		return cv;
 	}
 	
@@ -181,7 +188,13 @@ public class Party implements Serializable, IContentValuesPOJO {
 		setStart(cv.getAsString(PartyColumnHelper.START));
 		setDescription(cv.getAsString(PartyColumnHelper.DESCRIPTION_NAME));
 		setEnd(cv.getAsString(PartyColumnHelper.END));
-		
+		String organizersJson = cv.getAsString(PartyColumnHelper.ORGANIZERS);
+		String participantsJson = cv.getAsString(PartyColumnHelper.PARTICIPANTS);
+		Type collectionType = new TypeToken<LinkedList<Integer>>(){}.getType();
+		List<Integer> organizers = RestApi.i().getGson().fromJson(organizersJson, collectionType);
+		List<Integer> participants = RestApi.i().getGson().fromJson(participantsJson, collectionType);
+		setOrganizers(organizers);
+		setParticipants(participants);
 	}
 
 	public static Party fromContent(ContentValues cv) {

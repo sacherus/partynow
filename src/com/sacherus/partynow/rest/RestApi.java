@@ -34,9 +34,14 @@ public class RestApi {
 	final static String REGISTER_PATH =  USER_PATH + "register";
 	final static String JOIN = "join";
 	final static String ORGANIZE = "organize";
-
+	
 	// final static String PARTIES_IN_AREA_PATH = PARTY_PATH + "area/";
 
+	public Gson getGson() {
+		return gson;
+	}
+	
+	
 	private RestApi() {
 	}
 	

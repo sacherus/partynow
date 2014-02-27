@@ -1,16 +1,15 @@
 package com.sacherus.partynow.activities;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -20,10 +19,7 @@ import android.widget.Toast;
 import com.example.gpstracking.GPSTracker;
 import com.sacherus.partynow.R;
 import com.sacherus.partynow.provider.PartiesContract;
-import com.sacherus.partynow.provider.SimplePartyNowContentProvider;
-import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.rest.RestApi;
-import com.sacherus.utils.Utils;
 
 public class TestActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 	GPSTracker gps;
@@ -66,7 +62,6 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 		});
 
 		if (autologin) {
-			RestApi.i().shortMsg("autologin");
 			AutoLoginTask alt = new AutoLoginTask();
 			alt.execute();
 		}
@@ -109,17 +104,20 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 	}
 
 	class AutoLoginTask extends AsyncTask<Void, Void, Void> {
-
+		IOException ex;
+		
 		@Override
 		protected Void doInBackground(Void... notype) {
 			try {
 				RestApi.i().getToken("sacherus", "a");
-			} catch (Exception e) {
-				// TODO: handle exception
+			} catch (IOException e) {
+				ex = e;
 				e.printStackTrace();
 			}
 			return null;
 		}
+		
+
 
 	}
 

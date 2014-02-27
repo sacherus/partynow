@@ -30,6 +30,7 @@ import com.sacherus.partynow.provider.PartiesContract;
 import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
 import com.sacherus.partynow.provider.SimplePartyNowContentProvider;
 import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
 
 public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 
@@ -108,6 +109,7 @@ public class Parties extends Activity implements LoaderCallbacks<Cursor> {
 	            ContentValues cv = new ContentValues();
 	            DatabaseUtils.cursorRowToContentValues(c, cv); 
 	            Party party = Party.fromContent(cv);
+	            Utils.log(party.getOrganizers().toString());
 	            intent.putExtra(PartyActivity.PARTY, (Serializable) party);
 	            if (RestApi.i().isCurrentUserOrganizor(party)) {
 	            registerForContextMenu(listView);

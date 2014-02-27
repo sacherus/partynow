@@ -71,7 +71,7 @@ public class PartiesContract {
 		 */
 		public static final String URI_PARTY_NAME = "party";
 		public static final String URI_PARTY_NAME_REST = URI_PARTY_NAME + "/" + PartiesContract.URI_REST_FLAG;
-
+		
 		/**
 		 * Column name for the title of the video
 		 * <P>
@@ -97,6 +97,10 @@ public class PartiesContract {
 		public static final String START = "start";
 
 		public static final String END = "end";
+	
+		public static final String PARTICIPANTS = "participants";
+		
+		public static final String ORGANIZERS = "organizers";
 	}
 	
 	public static final class UserColumnHelper implements BaseColumns {

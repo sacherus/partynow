@@ -18,14 +18,15 @@ import com.sacherus.utils.Utils;
 
 public class RestClient implements Runnable {
 
-	private static String BASE_URL_DEBUG = "http://192.168.0.14:8000/";
+	private static String BASE_URL_DEBUG = "http://192.168.1.1:8000/";
 	private static final String BASE_URL = "http://partynow.herokuapp.com/";
 	private static final String TAG = RestClient.class.getName();
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 	private static Token token;
 
 	public static void setToken(Token token) {
 		RestClient.token = token;
+		
 	}
 
 	public String getAccessToken() {
@@ -35,6 +36,7 @@ public class RestClient implements Runnable {
 	private ResponseHandler rh;
 	private String location;
 	private String data;
+	
 
 	private HttpURLConnection prepareConnection(String location, String method) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) (new URL(getBaseURL() + location)).openConnection();
@@ -42,6 +44,7 @@ public class RestClient implements Runnable {
 			con.addRequestProperty("Authorization", "Bearer " + getAccessToken());
 		con.setRequestMethod(method);
 		return con;
+		
 	}
 
 	public RestClient(ResponseHandler rh, String location) {

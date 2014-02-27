@@ -13,21 +13,22 @@ import android.content.ContentValues;
 import android.util.Log;
 
 public class Utils {
+	public static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
 	public static void log(String msg) {
 		final String tag = "important";
 		Log.d(tag, msg);
 	}
-	
-	
+
 	public static void log(long id) {
 		log(Long.toString(id));
 	}
-	
+
 	public static ContentValues[] toContents(List<? extends IContentValuesPOJO> list) {
-		
+
 		List<ContentValues> returnList = new LinkedList<ContentValues>();
 		int size = 0;
-		for(IContentValuesPOJO el : list) {
+		for (IContentValuesPOJO el : list) {
 			size++;
 			returnList.add(el.toContent());
 		}
@@ -36,10 +37,10 @@ public class Utils {
 	}
 
 	public static Date stringToDate(String s) {
-		SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  
+
 		Date date = null;
 		try {
-			date = format.parse(s);
+			date = dateformat.parse(s);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,8 +49,11 @@ public class Utils {
 	}
 
 	public static String dateToString(Date d) {
-		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");  
 		String datetime = dateformat.format(d);
 		return datetime;
+	}
+	
+	public static String dayOfMonth(int month) {
+		return month < 10 ? "0" + month : "" + month;
 	}
 }

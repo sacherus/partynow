@@ -57,7 +57,7 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 		// use of the hash character indicates matching of an id
 		PARTY_URI_MATCHER.addURI(PartiesContract.SIMPLE_AUTHORITY, UserColumnHelper.URI_LAST_FRAGMENT + "/#", USER_ID);
 		PARTY_URI_MATCHER.addURI(PartiesContract.SIMPLE_AUTHORITY, UserColumnHelper.URI_LAST_FRAGMENT_REST, USER_REST);
-		
+
 	}
 
 	private DbHelper mOpenDbHelper;
@@ -73,6 +73,8 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 		partyProjectionMap.put(PartyColumnHelper.START, PartyColumnHelper.START);
 		partyProjectionMap.put(PartyColumnHelper.DESCRIPTION_NAME, PartyColumnHelper.DESCRIPTION_NAME);
 		partyProjectionMap.put(PartyColumnHelper.END, PartyColumnHelper.END);
+		partyProjectionMap.put(PartyColumnHelper.ORGANIZERS, PartyColumnHelper.ORGANIZERS);
+		partyProjectionMap.put(PartyColumnHelper.PARTICIPANTS, PartyColumnHelper.PARTICIPANTS);
 	}
 
 	private static class DbHelper extends SQLiteOpenHelper {
@@ -110,18 +112,24 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 			sqLiteDatabase.execSQL(DROP_TABLE);
 		}
 
+		// @formatter:off
 		private void createPartyTable(SQLiteDatabase sqLiteDatabase) {
-			String qs = "CREATE TABLE " + PARTY_TABLE_NAME + " (" + BaseColumns._ID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + PartiesContract.PartyColumnHelper.TITLE + " TEXT, "
+			String qs = "CREATE TABLE " + PARTY_TABLE_NAME + " ("
+					+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ PartiesContract.PartyColumnHelper.TITLE + " TEXT, "
 					+ PartiesContract.PartyColumnHelper.DESCRIPTION_NAME + " TEXT, "
-					+ PartiesContract.PartyColumnHelper.START + " TEXT, " + PartiesContract.PartyColumnHelper.END
-					+ " TEXT, " + PartiesContract.PartyColumnHelper.LONGITUDE + " REAL, "
+					+ PartyColumnHelper.ORGANIZERS + " TEXT, "
+					+ PartyColumnHelper.PARTICIPANTS + " TEXT, "
+					+ PartiesContract.PartyColumnHelper.START + " TEXT, "
+					+ PartiesContract.PartyColumnHelper.END	+ " TEXT, "
+					+ PartiesContract.PartyColumnHelper.LONGITUDE + " REAL, "
 					+ PartiesContract.PartyColumnHelper.LATITUDE + " REAL" + ");";
 			sqLiteDatabase.execSQL(qs);
 			// long pdb = populateDatabase(sqLiteDatabase);
 			// Log.d("TestTag", Long.toString(pdb));
 		}
-
+		// @formatter:on
+		
 		private void createUserTable(SQLiteDatabase sqLiteDatabase) {
 			String qs = "CREATE TABLE " + USER_TABLE_NAME + " (" + BaseColumns._ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + UserColumnHelper.USERNAME + " TEXT," + ")";
@@ -194,7 +202,7 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 		case USER_REST:
 			RestApi.i().getUsers();
 			break;
-			
+
 		default:
 			throw new IllegalArgumentException("unsupported uri: " + uri);
 		}
@@ -242,8 +250,8 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 			break;
 		case PARTY_REST:
 			RestApi.i().sendParty(Party.fromContent(initialValues));
-			return null;			
-			
+			return null;
+
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -255,7 +263,6 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 	public int bulkInsert(Uri uri, ContentValues[] allValues) {
 		SQLiteDatabase db = mOpenDbHelper.getWritableDatabase();
 		int retVal = 0;
-		Utils.log(PARTY_URI_MATCHER.match(uri));
 		switch (PARTY_URI_MATCHER.match(uri)) {
 		case PARTIES:
 			retVal = insertBulk(db, allValues, PartyColumnHelper.PARTIES_URI, PARTY_TABLE_NAME);
@@ -268,10 +275,7 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 		}
 		return retVal;
 	}
-	
 
-
-	
 	private long insertParty(SQLiteDatabase db, ContentValues values) {
 		// if (!values.containsKey(TeamCaptainData.EventColumns.ORGANIZER))
 		// throw new IllegalArgumentException("Missing event column '" +
@@ -324,7 +328,7 @@ public class SimplePartyNowContentProvider extends ContentProvider {
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsAdded;
 	}
-	
+
 	private long insertElementInBulk(SQLiteDatabase db, ContentValues values, String table) {
 		return db.insert(PARTY_TABLE_NAME, null, values);
 	}
