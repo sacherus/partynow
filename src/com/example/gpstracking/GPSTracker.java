@@ -1,5 +1,8 @@
 package com.example.gpstracking;
  
+import com.sacherus.partynow.rest.RestApi;
+import com.sacherus.utils.Utils;
+
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -133,7 +136,6 @@ public class GPSTracker extends Service implements LocationListener {
         if(location != null){
             longitude = location.getLongitude();
         }
-         
         // return longitude
         return longitude;
     }

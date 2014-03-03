@@ -2,6 +2,7 @@ package com.sacherus.partynow.pojos;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -12,8 +13,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sacherus.partynow.provider.PartiesContract;
-import com.sacherus.partynow.provider.PartiesContract.PartyColumnHelper;
+import com.sacherus.partynow.provider.PartynowContracts;
+import com.sacherus.partynow.provider.PartynowContracts.PartyColumnHelper;
 import com.sacherus.partynow.rest.RestApi;
 import com.sacherus.utils.Utils;
 
@@ -33,6 +34,10 @@ public class Party implements Serializable, IContentValuesPOJO {
 	private double longitude;
 	private double latitude;
 
+	Party() {
+		organizers = new ArrayList<Integer>();
+		participants = new ArrayList<Integer>();
+	}
 	
 	public String getDescription() {
 		return description;
@@ -131,7 +136,7 @@ public class Party implements Serializable, IContentValuesPOJO {
 	}
 	
 	public int getStartMonth() {
-		return getStartDate().MONTH;
+		return getStartDate().MONTH + 1;
 	}
 	
 	public int getStartYear(){
@@ -143,7 +148,7 @@ public class Party implements Serializable, IContentValuesPOJO {
 	}
 	
 	public int getEndMonth() {
-		return getEndDate().MONTH;
+		return getEndDate().MONTH + 1;
 	}
 	
 	public int getEndYear(){
@@ -167,7 +172,8 @@ public class Party implements Serializable, IContentValuesPOJO {
 		cv.put(PartyColumnHelper._ID, getId());
 		Gson gson = RestApi.i().getGson();
 		cv.put(PartyColumnHelper.PARTICIPANTS, gson.toJson(getParticipants()));
-		cv.put(PartyColumnHelper.ORGANIZERS, gson.toJson(getOrganizers()));		
+		cv.put(PartyColumnHelper.ORGANIZERS, gson.toJson(getOrganizers()));
+		Utils.log(cv.toString());
 		return cv;
 	}
 	
@@ -182,15 +188,16 @@ public class Party implements Serializable, IContentValuesPOJO {
 	 */
 	@Override
 	public void fromContentLocal(ContentValues cv) {
-		setTitle(cv.getAsString(PartiesContract.PartyColumnHelper.TITLE));
-		setLatitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LATITUDE));
-		setLongitude(cv.getAsDouble(PartiesContract.PartyColumnHelper.LONGITUDE));
+		setId(cv.getAsInteger(PartynowContracts.PartyColumnHelper._ID));
+		setTitle(cv.getAsString(PartynowContracts.PartyColumnHelper.TITLE));
+		setLatitude(cv.getAsDouble(PartynowContracts.PartyColumnHelper.LATITUDE));
+		setLongitude(cv.getAsDouble(PartynowContracts.PartyColumnHelper.LONGITUDE));
 		setStart(cv.getAsString(PartyColumnHelper.START));
 		setDescription(cv.getAsString(PartyColumnHelper.DESCRIPTION_NAME));
 		setEnd(cv.getAsString(PartyColumnHelper.END));
 		String organizersJson = cv.getAsString(PartyColumnHelper.ORGANIZERS);
 		String participantsJson = cv.getAsString(PartyColumnHelper.PARTICIPANTS);
-		Type collectionType = new TypeToken<LinkedList<Integer>>(){}.getType();
+		Type collectionType = new TypeToken<ArrayList<Integer>>(){}.getType();
 		List<Integer> organizers = RestApi.i().getGson().fromJson(organizersJson, collectionType);
 		List<Integer> participants = RestApi.i().getGson().fromJson(participantsJson, collectionType);
 		setOrganizers(organizers);
@@ -216,7 +223,7 @@ public class Party implements Serializable, IContentValuesPOJO {
 		}
 		
 		public PartyBuilder addLatitude(double v) {
-			instance.longitude = v;
+			instance.latitude = v;
 			return this;
 		}
 		
@@ -232,6 +239,11 @@ public class Party implements Serializable, IContentValuesPOJO {
 		
 		public PartyBuilder addEndDate(String v) {
 			instance.end = v;
+			return this;
+		}
+		
+		public PartyBuilder addId(int id) {
+			instance.id = id;
 			return this;
 		}
 		

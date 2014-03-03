@@ -3,8 +3,24 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:showAsAction="always"
+        android:title="@string/action_settings">
+          <menu>
+            <item
+                android:id="@+id/km"
+                android:orderInCategory="10"
+                android:showAsAction="always"
+                android:title="Change distance"
+                />
+               <item
+                android:id="@+id/interval"
+                android:orderInCategory="10"
+                android:showAsAction="always"
+                android:title="Change update timer"
+                />
+
+        </menu>
+        </item>
     
    <item
         android:id="@+id/action_logout"

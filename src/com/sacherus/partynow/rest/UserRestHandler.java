@@ -8,15 +8,15 @@ import android.content.Context;
 import com.google.gson.reflect.TypeToken;
 import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.pojos.User;
-import com.sacherus.partynow.provider.PartiesContract;
-import com.sacherus.partynow.provider.PartiesContract.UserColumnHelper;
+import com.sacherus.partynow.provider.PartynowContracts;
+import com.sacherus.partynow.provider.PartynowContracts.UserColumnHelper;
 import com.sacherus.partynow.rest.RestService.Plurality;
 import com.sacherus.utils.Utils;
 
 public class UserRestHandler extends ResponseHandler {
 	
-	UserRestHandler(Context context, Plurality plur, Class objectClass) {
-		super(context, plur, objectClass);
+	UserRestHandler(Context context, Plurality plur, Class objectClass, String location) {
+		super(context, plur, objectClass, location);
 		// TODO Auto-generated constructor stub
 	}
 

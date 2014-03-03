@@ -7,14 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.GregorianCalendar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.sacherus.partynow.pojos.Token;
-import com.sacherus.utils.Utils;
+import com.sacherus.partynow.rest.RestService.Method;
 
 public class RestClient implements Runnable {
 
@@ -36,7 +35,7 @@ public class RestClient implements Runnable {
 	private ResponseHandler rh;
 	private String location;
 	private String data;
-	
+	private Method method;
 
 	private HttpURLConnection prepareConnection(String location, String method) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) (new URL(getBaseURL() + location)).openConnection();
@@ -47,9 +46,10 @@ public class RestClient implements Runnable {
 		
 	}
 
-	public RestClient(ResponseHandler rh, String location) {
+	public RestClient(ResponseHandler rh, String location, Method method) {
 		this.location = location;
 		this.rh = rh;	
+		this.method = method;
 	}
 
 	public RestClient() {
@@ -128,11 +128,17 @@ public class RestClient implements Runnable {
 		httpcon.setDoOutput(true);
 		if (ContentType != null)
 			httpcon.setRequestProperty("Content-Type", ContentType);
-		httpcon.setRequestMethod("POST");
+		
+		if(method == null) {
+			method = Method.POST;
+		} else {
+			httpcon.setRequestMethod(method.toString());
+		}
+		
 		if (token != null) {
 			httpcon.addRequestProperty("Authorization", "Bearer " + getAccessToken());
 		}
-
+		
 		request = new OutputStreamWriter(httpcon.getOutputStream());
 		request.write(data);
 		request.flush();

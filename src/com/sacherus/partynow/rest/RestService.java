@@ -18,7 +18,7 @@ public class RestService extends IntentService {
 	public static final String CLASS = "class";
 
 	enum Method {
-		GET("GET"), POST("POST");
+		GET("GET"), POST("POST"), PUT("PUT");
 
 		private Method(final String text) {
 			this.text = text;
@@ -66,17 +66,20 @@ public class RestService extends IntentService {
 		// String methodString = method.toString();
 		ResponseHandler handler;
 		if (location.contains("user")) {
-			handler = new UserRestHandler(getApplicationContext(), plurality, objectClass);
+			handler = new UserRestHandler(getApplicationContext(), plurality, objectClass, location);
 		} else {
-			handler = new RestHandler(getApplicationContext(), plurality, objectClass);
+			handler = new RestHandler(getApplicationContext(), plurality, objectClass, location);
 		}
 		// handler.init(getApplicationContext());
 		Utils.log(objectClass.toString());
-		RestClient rc = new RestClient(handler, location);
+		RestClient rc = new RestClient(handler, location, method);
 		switch (method) {
 		case GET:
 			break;
 		case POST:
+			rc.setData(data);
+			break;
+		case PUT:
 			rc.setData(data);
 			break;
 		default:

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.gpstracking.GPSTracker;
 import com.sacherus.partynow.R;
-import com.sacherus.partynow.provider.PartiesContract;
+import com.sacherus.partynow.provider.PartynowContracts;
 import com.sacherus.partynow.rest.RestApi;
 
 public class TestActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -28,14 +28,14 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_test);
 		Button buttonLogin = (Button) findViewById(R.id.loginButton);
 		Button buttonTest = (Button) findViewById(R.id.button1);
 		Button partiesMenu = (Button) findViewById(R.id.menuButton);
-
+		Button mapsButton = (Button) findViewById(R.id.maps);
 		buttonLogin.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(TestActivity.this, LoginActivity.class);
+				Intent intent = new Intent(TestActivity.this, GeoCoderActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -49,6 +49,15 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 //				alt.execute();
 //				RestApi.i().join(6);
 //				RestApi.i().msg(RestApi.i().getMyUser().getUsername());
+				Intent intent = new Intent(TestActivity.this, GeoCoderActivity.class);
+				startActivity(intent);
+			}
+		});
+		
+		mapsButton.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(TestActivity.this, MapActivity.class);
+				startActivity(intent);
 			}
 		});
 
@@ -103,28 +112,36 @@ public class TestActivity extends Activity implements LoaderManager.LoaderCallba
 		}
 	}
 
-	class AutoLoginTask extends AsyncTask<Void, Void, Void> {
+	class AutoLoginTask extends AsyncTask<Void, Void, Boolean> {
 		IOException ex;
 		
 		@Override
-		protected Void doInBackground(Void... notype) {
+		protected Boolean doInBackground(Void... notype) {
 			try {
 				RestApi.i().getToken("sacherus", "a");
 			} catch (IOException e) {
 				ex = e;
 				e.printStackTrace();
+				return false;
 			}
-			return null;
+			return true;
 		}
 		
-
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if(result) {
+				RestApi.i().shortMsg("Test autologin successful");
+			} else {
+				RestApi.i().shortMsg(ex.toString());
+			}	         
+	     }
 
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		String[] projection = { PartiesContract.PartyColumnHelper._ID, PartiesContract.PartyColumnHelper.TITLE };
-		CursorLoader cursorLoader = new CursorLoader(this, PartiesContract.PartyColumnHelper.CONTENT_URI, projection,
+		String[] projection = { PartynowContracts.PartyColumnHelper._ID, PartynowContracts.PartyColumnHelper.TITLE };
+		CursorLoader cursorLoader = new CursorLoader(this, PartynowContracts.PartyColumnHelper.CONTENT_URI, projection,
 				null, null, null);
 		return cursorLoader;
 	}

@@ -19,11 +19,13 @@ abstract public class ResponseHandler {
 	private Handler handler;
 	protected Plurality plur;
 	protected Class objectClass;
+	protected String location;
 	
-	ResponseHandler(Context context, Plurality plur, Class objectClass) {
+	ResponseHandler(Context context, Plurality plur, Class objectClass, String location) {
 		this(context);
 		this.plur = plur;
 		this.objectClass = objectClass;
+		this.location = location;
 	}
 	
 
@@ -31,6 +33,9 @@ abstract public class ResponseHandler {
 		this.context = context.getApplicationContext();
 		handler = new Handler(context.getMainLooper());
 	}
+
+
+
 
 	public void showMsg(final String msg) {
 		handler.post(new Runnable() {

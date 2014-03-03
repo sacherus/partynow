@@ -52,7 +52,7 @@ public class RegisterActivity extends Activity {
 	}
 
 	private User getUser() {
-		User user = new User(fullnameEdit.getText().toString(), passwordEdit.getText().toString());
+		User user = new User(fullnameEdit.getText().toString(), passwordEdit.getText().toString(), emailEdit.getText().toString());
 		return user;
 	}
 

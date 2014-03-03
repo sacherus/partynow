@@ -15,9 +15,14 @@ import android.util.Log;
 public class Utils {
 	public static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+	final static String tag = "important";
+	
 	public static void log(String msg) {
-		final String tag = "important";
 		Log.d(tag, msg);
+	}
+	
+	public static void log(double msg) {
+		Log.d(tag, Double.toString(msg));
 	}
 
 	public static void log(long id) {

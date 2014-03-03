@@ -11,6 +11,7 @@ import com.example.gpstracking.GPSTracker;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sacherus.partynow.activities.LoginActivity;
 import com.sacherus.partynow.pojos.Party;
 import com.sacherus.partynow.pojos.Token;
 import com.sacherus.partynow.pojos.User;
@@ -28,7 +29,9 @@ public class RestApi {
 	private User user = new User();
 	private static final String CLIENT_ID = "holenderskie";
 	private static final String CLIENT_SECRET = "wCzekoladzie";
-
+	private double kms = 5.0;
+	private int partiesInArea = 0;
+	private int interval = 1000 * 2 * 60;
 	final static String PARTY_PATH = "party/";
 	final static String USER_PATH = PARTY_PATH + "users/";
 	final static String REGISTER_PATH =  USER_PATH + "register";
@@ -114,8 +117,12 @@ public class RestApi {
 		rc.sendJSON(REGISTER_PATH, data);
 	}
 
-	public boolean logout() {
-		return false;
+	public void logout() {
+		user = null;
+		RestClient.setToken(null);
+		Intent intent = new Intent(context, LoginActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(intent);
 	}
 
 	public void getUsers() {
@@ -173,6 +180,14 @@ public class RestApi {
 		context.startService(intent);
 	}
 
+	public int getPartiesInArea() {
+		return partiesInArea;
+	}
+	
+	public void setPartiesInArea(int parties) {
+		partiesInArea = parties;
+	}
+	
 	public void sendParty(Party party) {
 		Intent intent = new Intent(context, RestService.class);
 		intent.putExtra(RestService.METHOD, Method.POST);
@@ -182,14 +197,41 @@ public class RestApi {
 		intent.putExtra(RestService.CLASS, Party.class);
 		context.startService(intent);
 	}
+	
+	public void editParty(Party party) {
+		Intent intent = new Intent(context, RestService.class);
+		intent.putExtra(RestService.METHOD, Method.PUT);
+		intent.putExtra(RestService.LOCATION, PARTY_PATH + party.getId());
+		intent.putExtra(RestService.PLURALITY, Plurality.SINGULAR);
+		intent.putExtra(RestService.DATA, gson.toJson(party));
+		intent.putExtra(RestService.CLASS, Party.class);
+		context.startService(intent);
+	}
 
-	public void msg(String msg) {
+	public void longMsg(String msg) {
 		Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 	}
 
 	public void shortMsg(String text) {
 		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
 	}
+	
+	public double getKms(){
+		return this.kms;
+	}
+	
+	public void setKms(double kms) {
+		this.kms = kms;
+	}
+	
+	public int getInterval() {
+		return this.interval;
+	}
+	
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
+	
 
 	class RestBuilder {
 		private Intent intent;

@@ -5,13 +5,27 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="18" />
+        android:minSdkVersion="15"
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission
+        android:name="com.sacherus.partynow.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.sacherus.partynow.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Required OpenGL ES 2.0. for Maps V2 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -44,10 +58,6 @@
             android:label="@string/title_activity_parties" >
         </activity>
         <activity
-            android:name="com.example.invidualproject.VogelListView"
-            android:label="@string/title_activity_vogel_list_view" >
-        </activity>
-        <activity
             android:name="com.sacherus.partynow.activities.PartyActivity"
             android:label="@string/title_activity_add_party" >
         </activity>
@@ -70,6 +80,37 @@
         <activity
             android:name="com.sacherus.partynow.DisplayActivity"
             android:label="@string/title_activity_display" >
+        </activity>
+        <activity
+            android:name="com.sacherus.partynow.activities.MapActivity"
+            android:label="@string/title_activity_map" >
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCJ3Ig-xmtNoozqoYBGexNUl2LWTYdm3FQ" />
+
+        <receiver android:name="com.sacherus.partynow.activities.AlarmManagerBroadcastReceiver" >
+        </receiver>
+
+        <activity
+            android:name="com.sacherus.partynow.activities.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.sacherus.partynow.activities.BaseActivity"
+            android:label="@string/title_activity_base" >
+        </activity>
+        <activity
+            android:name="com.sacherus.partynow.activities.UsersActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name="com.sacherus.partynow.activities.GeoCoderActivity"
+            android:label="@string/app_name" >
         </activity>
     </application>
 
